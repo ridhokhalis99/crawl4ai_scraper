@@ -23,8 +23,7 @@ async def extract_structured_data_using_llm(
         extra_args["extra_headers"] = extra_headers
 
     instruction = """
-    You are a machine that extracts structured data from a website.
-    Extract all the showcase site names and their target valid URLs.
+    Extract the pricing information from the page. The pricing information should include the model name, input fee, output fee, and cached input fee.
     """
 
     crawler_config = CrawlerRunConfig(
@@ -36,8 +35,10 @@ async def extract_structured_data_using_llm(
             api_token=api_token,
             extraction_type="schema",
             schema= {
-                "site_name": "string",
-                "site_url": "string"
+                "model_name": "string",
+                "input_fee": "number",
+                "output_fee": "number",
+                "cached_input_fee": "number",
             },
             instruction=instruction,
             extra_args=extra_args,
@@ -52,7 +53,7 @@ async def extract_structured_data_using_llm(
 
     async with AsyncWebCrawler(config=browser_config) as crawler:
         result = await crawler.arun(
-            url="https://erkabased.com/showcase", config=crawler_config
+            url="https://openai.com/api/pricing/", config=crawler_config
         )
         print(result.extracted_content)
 
